@@ -16,7 +16,7 @@
 
         </textarea>
         <div class="button">
-
+            <p>查询详情</p>
         </div>
         <div class="result">
             <div class="result-item" v-for="items in results" :key="items">
@@ -27,7 +27,7 @@
                 <div class="content-text">{{items.content.q}}</div>
                 <div class="content-text">{{items.content.a}}</div>
               </div>
-              <div class="teleport">查看详情</div>
+              <div class="teleport" @click="query">查看详情</div>
             </div>
         </div>
       </div>
@@ -37,7 +37,10 @@
   </div>
 </template>
 
+
 <script>
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 export default {
   name: "Entry",
   data:function(){
@@ -57,6 +60,9 @@ export default {
       }else{
         this.$refs.intro.style.display = ""
       }
+    },
+    query(){
+      this.axios.get()
     }
   },
 }
@@ -113,6 +119,12 @@ export default {
   width: 138px;
   margin:5px 0;
   align-self:flex-end;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.button p{
+  color:white;
 }
 .search-result textarea{
   width: 100%;
