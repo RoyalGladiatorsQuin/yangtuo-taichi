@@ -12,10 +12,10 @@
 
       </div>
       <div class="search-result">
-          <textarea id="query">
+          <textarea id="query" v-model="editingNote">
 
         </textarea>
-        <div class="button">
+        <div class="button" @click="query">
             <p>查询详情</p>
         </div>
         <div class="result">
@@ -27,7 +27,7 @@
                 <div class="content-text">{{items.content.q}}</div>
                 <div class="content-text">{{items.content.a}}</div>
               </div>
-              <div class="teleport" @click="query">查看详情</div>
+              <div class="teleport">查看详情</div>
             </div>
         </div>
       </div>
@@ -40,7 +40,6 @@
 
 <script>
 import axios from 'axios'
-import VueAxios from 'vue-axios'
 export default {
   name: "Entry",
   data:function(){
@@ -48,21 +47,29 @@ export default {
       mainTitle: "羊驼打过的太极",
       subtitle:"看看羊驼都说了什么",
       results:[{date:"每周QA1.12",content:{q:"123",a:"234"}},{date:"每周QA1.12",content:{q:"123",a:"234"}}],
-      introDisplay: true
+      introDisplay: true,
+      editingNote:"",
+      note: "",
+      response: null,
     }
-
   },
   methods:{
+    editNote(){
+      this.note=this.editingNote;
+    },
     fold(){
       this.introDisplay = !this.introDisplay
       if (this.introDisplay){
         this.$refs.intro.style.display = "none";
       }else{
-        this.$refs.intro.style.display = ""
+        this.$refs.intro.style.display = "";
       }
     },
     query(){
-      this.axios.get()
+      this.editNote();
+      axios.get('http://spiders.asoulwiki.top:8080/v1/spider/find?key='+ this.note).then((response)=>{
+        console.log(response.data)
+      })
     }
   },
 }
