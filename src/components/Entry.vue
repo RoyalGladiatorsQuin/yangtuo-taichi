@@ -9,7 +9,7 @@
     </div>
     <div class="textbox">
       <div ref="intro" class="intro">
-
+          {{introText}}
       </div>
       <div class="search-result">
           <textarea id="query" v-model="editingNote">
@@ -18,16 +18,21 @@
         <div class="button" @click="query">
             <p>查询详情</p>
         </div>
+        <div class="error" v-if="errorResponse">
+          {{errorMsg}}
+        </div>
         <div class="result">
             <div class="result-item" v-for="items in results" :key="items">
               <div class="result-title">
-                <div class="result-text">{{items.date}}</div>
+                <div class="result-text">{{items.title}}</div>
               </div>
               <div class="result-content">
-                <div class="content-text">{{items.content.q}}</div>
-                <div class="content-text">{{items.content.a}}</div>
+                <div class="pair-qa" v-for="qas in items.qa" :key="qas">
+                  <div class="content-text" v-html="heightLight(qas.q)"></div>
+                  <div class="content-text" v-html="heightLight(qas.a)"></div>
+                </div>
               </div>
-              <div class="teleport">查看详情</div>
+              <div class="teleport" @click="to"><a :href="items.link">查看详情</a></div>
             </div>
         </div>
       </div>
@@ -46,16 +51,23 @@ export default {
     return{
       mainTitle: "羊驼打过的太极",
       subtitle:"看看羊驼都说了什么",
-      results:[{date:"每周QA1.12",content:{q:"123",a:"234"}},{date:"每周QA1.12",content:{q:"123",a:"234"}}],
+      results:[],
       introDisplay: true,
       editingNote:"",
       note: "",
       response: null,
+      introText : "可以方便的查询羊驼在QA中答应的事情，最短三个字最长二十个字哦。遇到任何问题欢迎私信B站\n@ProjectASF",
+      errorResponse: false,
+      errorMsg:"没找到相应的QA哦"
     }
   },
   methods:{
     editNote(){
       this.note=this.editingNote;
+      this.note.replace(/\r\n/g,"")
+      this.note = this.note.replace(/\n/g,"");
+      this.note = this.note.replace(/ /g,"")
+      console.log(this.note)
     },
     fold(){
       this.introDisplay = !this.introDisplay
@@ -67,9 +79,30 @@ export default {
     },
     query(){
       this.editNote();
-      axios.get('http://spiders.asoulwiki.top:8080/v1/spider/find?key='+ this.note).then((response)=>{
-        console.log(response.data)
+      if(this.note.length < 3){
+        this.errorResponse = true
+        this.errorMsg = "QA太短了哦"
+        this.results = []
+        return
+      }
+      axios.get('http://43.135.162.140:8080/v1/spider/find?key='+ this.note).then((response)=>{
+        if (response.data.code === 0){
+          console.log(response)
+          this.results = response.data.Data
+          this.errorResponse = false
+          return
+        }
+        this.results = []
+        this.errorResponse = true
+        this.errorMsg = "没找到对应的QA哦"
+        console.log(response.data.status)
       })
+    },
+    heightLight(val){
+      if(val.includes(this.note) && this.note !== ''){
+        return val.replace(this.note,'<span style="color: red">'+this.note+'</span>')
+      }
+      return val
     }
   },
 }
@@ -103,8 +136,9 @@ export default {
 .intro{
   background-color:#f3f4f6;
   width: 500px;
-  height: 300px;
+  font-size:20px;
   margin: 0 15px;
+  padding: 15px
 }
 
 .textbox{
@@ -177,9 +211,20 @@ export default {
   width:auto;
   margin: 10px
 }
+.teleport a{
+  text-decoration: none;
+}
 
+.error{
+  justify-content:center;
+  text-align: center;
+  font-size: 17px;
+  color:#AA5555;
+}
 
-
+.error p{
+  width:auto;
+}
 
 @media screen and (max-width: 780px){
   .titles{
