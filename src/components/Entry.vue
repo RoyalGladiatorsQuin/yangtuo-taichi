@@ -32,7 +32,8 @@
                   <div class="content-text" v-html="heightLight(qas.a)"></div>
                 </div>
               </div>
-              <div class="teleport" @click="to"><a :href="items.link">查看详情</a></div>
+
+              <div class="teleport" @click="goto(items.link)"><a>查看详情</a></div>
             </div>
         </div>
       </div>
@@ -103,6 +104,9 @@ export default {
         return val.replace(this.note,'<span style="color: red">'+this.note+'</span>')
       }
       return val
+    },
+    goto(link){
+      window.open(link)
     }
   },
 }
@@ -138,7 +142,8 @@ export default {
   width: 500px;
   font-size:20px;
   margin: 0 15px;
-  padding: 15px
+  padding: 15px;
+  max-height: 500px;
 }
 
 .textbox{
