@@ -83,7 +83,7 @@ export default {
       editingNote:"",
       note: "",
       response: null,
-      introText : "可以方便的查询羊驼在QA中答应的事情，最短三个字最长二十个字哦。现已支持普通，模糊，正则（google re2）三种查询方式。遇到任何问题欢迎在B站私信我们！\n",
+      introText : "可以方便的查询羊驼在QA中答应的事情，最长二十个字哦。现已支持普通，模糊，正则（google re2）三种查询方式。遇到任何问题欢迎在B站私信我们！\n",
       backEndUrl: "https://github.com/ZocP/spiders",
       bilibiliURL: "https://space.bilibili.com/1442421278",
       errorResponse: false,
@@ -115,7 +115,7 @@ export default {
     },
     query(){
       this.editNote();
-      if(this.note.length < 3){
+      if(this.note.length < 1){
         this.errorResponse = true
         this.errorMsg = "QA太短了哦"
         this.results = []
