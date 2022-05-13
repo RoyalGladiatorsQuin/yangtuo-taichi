@@ -115,7 +115,7 @@ export default {
     },
     query(){
       this.editNote();
-      if(this.note.length < 3){
+      if(this.note.length < 2){
         this.errorResponse = true
         this.errorMsg = "QA太短了哦"
         this.results = []
